@@ -1,0 +1,20 @@
+package service;
+
+import dao.FactoryDao;
+import dao.RoomDao;
+import model.room.Room;
+
+import java.util.List;
+
+public class RoomService {
+
+    private FactoryDao factoryDao = FactoryDao.getInstance();
+
+
+    public List<Room> findAllRooms() {
+        try (RoomDao roomDao = factoryDao.createRoomDao()) {
+            return roomDao.findAll();
+        }
+    }
+
+}
