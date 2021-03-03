@@ -1,5 +1,6 @@
 package dao;
 
+import javax.swing.text.html.Option;
 import java.util.List;
 import java.util.Optional;
 
@@ -10,9 +11,6 @@ public interface GenericDao<T> extends AutoCloseable {
 
     List<T> findAll();
 
-    void update(T entity);
+    Optional<T> update(T entity);
 
-    void delete(int id);
-
-    void close();
 }

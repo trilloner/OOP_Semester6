@@ -8,7 +8,7 @@ public class UserService {
 
     private final FactoryDao factoryDao = FactoryDao.getInstance();
 
-    public User loginUser(String name, String password) {
+    public User loginUser(String name, String password) throws Exception {
         User resultOfUser;
         try (UserDao userDao = factoryDao.createUserDao()) {
             resultOfUser = userDao.findByEmail(name)
@@ -17,11 +17,5 @@ public class UserService {
         if (resultOfUser.getPassword().equals(password))
             return resultOfUser;
         throw new IllegalArgumentException("Different password");
-    }
-
-    public User registerNewUser(User user) throws Exception {
-        try (UserDao userDao = factoryDao.createUserDao()) {
-            return userDao.create(user).orElseThrow(() -> new Exception("User with email already exist"));
-        }
     }
 }

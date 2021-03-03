@@ -12,7 +12,7 @@ export class RoomService {
   constructor(private httpClient: HttpClient) {
   }
 
-  getAllRooms(): Observable<Room> {
-    return this.httpClient.get<Room>(this.url);
+  getAllRooms(): Observable<Room[]> {
+    return this.httpClient.get<Room[]>(this.url);
   }
 }

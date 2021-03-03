@@ -94,7 +94,7 @@ public class ReservationDaoImpl implements ReservationDao {
             while (set.next()) {
                 Reservation reservation = reservationMapper.getReservationFromResultSet(set);
                 reservation.setRoomId(new RoomBuilder()
-                        .setId(Long.parseLong(set.getString("room_id")))
+                        .setId(set.getLong("room_id"))
                         .setName(set.getString("name"))
                         .build());
                 reservationList.add(reservation);
@@ -108,7 +108,7 @@ public class ReservationDaoImpl implements ReservationDao {
 
     //TODO return Reservation
     @Override
-    public void update(Reservation entity) {
+    public Optional<Reservation> update(Reservation entity) {
         try {
 
             PreparedStatement statement = connection.prepareStatement(bundle.getString("reservation.update"));
@@ -116,19 +116,18 @@ public class ReservationDaoImpl implements ReservationDao {
             statement.setString(2, Status.CONFIRMED.getName());
             statement.setLong(3, entity.getId());
             statement.executeUpdate();
+            return Optional.of(entity);
         } catch (SQLException ex) {
             logger.warn("Reservation could not be created: {}", ex.getMessage());
+            return Optional.empty();
+
         }
-
     }
 
-    @Override
-    public void delete(int id) {
-
-    }
 
     @Override
-    public void close() {
+    public void close() throws SQLException {
+        connection.close();
 
     }
 

@@ -14,8 +14,8 @@ import java.util.ResourceBundle;
 public class UserDaoImpl implements UserDao {
     private final Logger logger = LogManager.getLogger(UserDaoImpl.class);
     private final Connection connection;
-    private ResourceBundle resourceBundle = ResourceBundle.getBundle("sql");
-    private UserMapper userMapper = new UserMapper();
+    private final ResourceBundle resourceBundle = ResourceBundle.getBundle("sql");
+    private final UserMapper userMapper = new UserMapper();
 
     public UserDaoImpl(Connection connection) {
         this.connection = connection;
@@ -71,26 +71,23 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     public User findById(int id) {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public List<User> findAll() {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
-    public void update(User entity) {
-
+    public Optional<User> update(User entity) {
+        throw new UnsupportedOperationException();
     }
 
-    @Override
-    public void delete(int id) {
-
-    }
 
     @Override
-    public void close() {
+    public void close() throws Exception {
+        connection.close();
 
     }
 }

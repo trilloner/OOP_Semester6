@@ -17,21 +17,22 @@ public class ReservationService {
         }
     }
 
-    public List<Reservation> findAllReservationByUser(Long id) {
+    public List<Reservation> findAllReservationByUser(Long id) throws Exception {
         try (ReservationDao reservationDao = factoryDao.createReservationDao()) {
             return reservationDao.findReservationsByUser(id);
         }
     }
 
-    public List<Reservation> findAllReservations() {
+    public List<Reservation> findAllReservations() throws Exception {
         try (ReservationDao reservationDao = factoryDao.createReservationDao()) {
             return reservationDao.findAll();
         }
     }
 
-    public void updateReservation(Reservation reservation) {
+    public Reservation updateReservation(Reservation reservation) throws Exception {
         try (ReservationDao reservationDao = factoryDao.createReservationDao()) {
-            reservationDao.update(reservation);
+            return reservationDao.update(reservation)
+                    .orElseThrow(() -> new Exception("Reservation can`t be updated"));
         }
     }
 

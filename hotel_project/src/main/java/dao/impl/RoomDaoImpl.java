@@ -54,18 +54,13 @@ public class RoomDaoImpl implements RoomDao {
     }
 
     @Override
-    public void update(Room entity) {
-
+    public Optional<Room> update(Room entity) {
+        throw new UnsupportedOperationException();
     }
+
 
     @Override
-    public void delete(int id) {
-
+    public void close() throws Exception {
+        connection.close();
     }
-
-    @Override
-    public void close() {
-
-    }
-
 }

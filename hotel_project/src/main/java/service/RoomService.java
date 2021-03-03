@@ -11,7 +11,7 @@ public class RoomService {
     private FactoryDao factoryDao = FactoryDao.getInstance();
 
 
-    public List<Room> findAllRooms() {
+    public List<Room> findAllRooms() throws Exception {
         try (RoomDao roomDao = factoryDao.createRoomDao()) {
             return roomDao.findAll();
         }

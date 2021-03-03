@@ -1,7 +1,11 @@
 package model.reservation;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import model.room.Room;
 import model.user.User;
+import util.LocalDateDeserializer;
+import util.LocalDateSerializer;
 
 import java.time.LocalDate;
 
@@ -11,8 +15,12 @@ public class Reservation {
     private Integer numberOfSeats;
 
     private String apartments;
-    private LocalDate checkIn;
 
+    @JsonSerialize(using = LocalDateSerializer.class)
+    @JsonDeserialize(using = LocalDateDeserializer.class)
+    private LocalDate checkIn;
+    @JsonSerialize(using = LocalDateSerializer.class)
+    @JsonDeserialize(using = LocalDateDeserializer.class)
     private LocalDate checkOut;
 
     private User userByUserId;

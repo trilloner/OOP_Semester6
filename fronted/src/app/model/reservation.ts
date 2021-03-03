@@ -1,11 +1,13 @@
+import {Room} from './room';
+
 export interface Reservation {
-  id: number;
-  number_of_seats: number;
-  apartments: string;
+  id?: number;
+  numberOfSeats: number;
   checkIn: Date;
   checkOut: Date;
-  user_id: number;
-  room_id: number;
+  apartments: string;
+  userByUserId: number;
+  roomId?: Room;
   status: string;
 
 }
