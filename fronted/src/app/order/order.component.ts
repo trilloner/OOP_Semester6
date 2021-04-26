@@ -1,8 +1,8 @@
 import {Component, OnInit} from '@angular/core';
 import {ReservationService} from '../service/reservation.service';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {AuthService} from '../service/auth-service';
-import {Reservation} from '../model/reservation';
+import {LoginComponent} from '../login/login.component';
+import {OAuthService} from 'angular-oauth2-oidc';
 
 @Component({
   selector: 'app-order',
@@ -11,10 +11,12 @@ import {Reservation} from '../model/reservation';
 })
 export class OrderComponent implements OnInit {
   reservationForm: FormGroup;
+  user = 1;
+  state = 'PENDING';
 
   constructor(private reservationService: ReservationService,
               private formBuilder: FormBuilder,
-              private authService: AuthService) {
+              private oauthService: OAuthService) {
   }
 
   ngOnInit(): void {
@@ -26,19 +28,20 @@ export class OrderComponent implements OnInit {
         apartments: ['', Validators.required]
       }
     );
+    console.log(this.oauthService.getIdentityClaims());
   }
 
   buildReservation(): any {
-    const reserv = {
+    const reservation = {
       numberOfSeats: this.inputs.number_of_seats.value,
+      apartments: this.inputs.apartments.value,
       checkIn: this.inputs.checkIn.value,
       checkOut: this.inputs.checkOut.value,
-      apartments: this.inputs.apartments.value,
-      userByUserId: this.authService.currentUserValue,
-      status: 'PENDING'
+      userByUserId: this.user,
+      status: this.state
     };
-    console.log(reserv);
-    return reserv ;
+    console.log(reservation);
+    return reservation;
   }
 
   get inputs(): any {
@@ -46,8 +49,7 @@ export class OrderComponent implements OnInit {
   }
 
   createNewReservationByUser(): any {
-    return this.reservationService.createReservationByUser(this.buildReservation()).subscribe();
-
+    return this.reservationService.createReservationByUser(this.buildReservation()).subscribe(d => console.log(d));
   }
 
 }

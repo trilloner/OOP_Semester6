@@ -16,19 +16,19 @@ import java.util.List;
 
 @WebServlet(urlPatterns = "/cabinet")
 public class CabinetServlet extends HttpServlet {
-    static final Logger logger = LogManager.getLogger(LoginServlet.class);
+    static final Logger logger = LogManager.getLogger(CabinetServlet.class);
     private final ReservationService reservationService = new ReservationService();
 
-    @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    public void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         logger.info("Executing cabinet get controller");
         try {
             List<Reservation> listOfReservations = reservationService.findAllReservationByUser(
                     Long.parseLong(req.getParameter("user")));
             JsonConverter.makeJsonAnswer(listOfReservations, resp);
+
         } catch (Exception ex) {
             logger.info("Reservation can`t be founded: {}", ex.getMessage());
-            resp.sendError(500);
+            resp.sendError(400);
         }
     }
 }

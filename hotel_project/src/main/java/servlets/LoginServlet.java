@@ -20,6 +20,7 @@ public class LoginServlet extends HttpServlet {
     static final Logger logger = LogManager.getLogger(LoginServlet.class);
 
 
+
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         logger.info("Executing post login command");
@@ -31,10 +32,9 @@ public class LoginServlet extends HttpServlet {
             User user = userService.loginUser(name, password);
 
             JsonConverter.makeJsonAnswer(user, resp);
-
         } catch (Exception e) {
             logger.error("User can`t be logged: {}", e.getMessage());
-            resp.sendError(500);
+            resp.sendError(400);
         }
     }
 }

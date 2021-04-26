@@ -10,11 +10,13 @@ public class RoomService {
 
     private FactoryDao factoryDao = FactoryDao.getInstance();
 
-
     public List<Room> findAllRooms() throws Exception {
         try (RoomDao roomDao = factoryDao.createRoomDao()) {
             return roomDao.findAll();
         }
     }
 
+    public void setFactoryDao(FactoryDao factoryDao) {
+        this.factoryDao = factoryDao;
+    }
 }

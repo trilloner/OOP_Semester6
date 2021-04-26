@@ -9,7 +9,7 @@ import java.sql.Connection;
 
 public class FactoryDaoImpl extends FactoryDao {
 
-    private final ConnectionPool connectionPool = ConnectionPool.getInstance();
+    private final ConnectionPool connectionPool = new ConnectionPool();
 
     @Override
     public UserDao createUserDao() {

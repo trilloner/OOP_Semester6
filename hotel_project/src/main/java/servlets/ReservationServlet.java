@@ -20,7 +20,7 @@ import java.util.List;
 public class ReservationServlet extends HttpServlet {
     static final Logger logger = LogManager.getLogger(LoginServlet.class);
     private final ReservationService reservationService = new ReservationService();
-
+    //TODO set
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -30,7 +30,7 @@ public class ReservationServlet extends HttpServlet {
             JsonConverter.makeJsonAnswer(list, resp);
         } catch (Exception e) {
             logger.error("Can`t receive reservations: {}", e.getMessage());
-            resp.sendError(500);
+            resp.sendError(400);
         }
 
     }
@@ -46,7 +46,7 @@ public class ReservationServlet extends HttpServlet {
         } catch (Exception e) {
             logger.error("Can`t create reservation: {}", e.getMessage());
 
-            resp.sendError(500, "Something went wrong on server");
+            resp.sendError(400, "Something went wrong on server");
         }
     }
 }

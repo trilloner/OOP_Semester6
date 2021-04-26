@@ -18,7 +18,6 @@ public class JsonConverter {
     public static <T> void makeJsonAnswer(T obj, HttpServletResponse response) throws IOException {
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
-//        response.addHeader("Access-Control-Allow-Origin", "*");
         response.setHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
         PrintWriter out = response.getWriter();
         out.print(new ObjectMapper().writeValueAsString(obj));

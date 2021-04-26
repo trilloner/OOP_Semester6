@@ -9,7 +9,6 @@ import java.sql.SQLException;
 public class RoomMapper {
 
     public Room getRoomFromResultSet(ResultSet resultSet) throws SQLException {
-
         return new RoomBuilder()
                 .setId(resultSet.getLong("id"))
                 .setName(resultSet.getString("name"))

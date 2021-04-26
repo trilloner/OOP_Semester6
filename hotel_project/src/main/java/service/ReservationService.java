@@ -8,7 +8,7 @@ import java.util.List;
 
 public class ReservationService {
 
-    private final FactoryDao factoryDao = FactoryDao.getInstance();
+    private FactoryDao factoryDao = FactoryDao.getInstance();
 
     public Reservation createNewReserve(Reservation reservation) throws Exception {
         try (ReservationDao reservationDao = factoryDao.createReservationDao()) {
@@ -16,7 +16,6 @@ public class ReservationService {
                     .orElseThrow(() -> new Exception("reservation cannot be created"));
         }
     }
-
     public List<Reservation> findAllReservationByUser(Long id) throws Exception {
         try (ReservationDao reservationDao = factoryDao.createReservationDao()) {
             return reservationDao.findReservationsByUser(id);
@@ -36,4 +35,7 @@ public class ReservationService {
         }
     }
 
+    public void setFactoryDao(FactoryDao factoryDao) {
+        this.factoryDao = factoryDao;
+    }
 }

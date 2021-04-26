@@ -106,23 +106,67 @@ public class ReservationDaoImpl implements ReservationDao {
         return reservationList;
     }
 
-    //TODO return Reservation
+    // TODO Transaction
     @Override
-    public Optional<Reservation> update(Reservation entity) {
+    public Optional<Reservation> update(Reservation entity) throws SQLException {
+        Statement statement = null;
         try {
+            connection.setAutoCommit(false);
+            statement = connection.createStatement();
+            statement.execute("BEGIN TRANSACTION");
+            Long id = null;
 
-            PreparedStatement statement = connection.prepareStatement(bundle.getString("reservation.update"));
-            statement.setLong(1, entity.getRoomId().getId());
-            statement.setString(2, Status.CONFIRMED.getName());
-            statement.setLong(3, entity.getId());
-            statement.executeUpdate();
+            PreparedStatement firstStatement = connection.prepareStatement("SELECT * FROM reservation WHERE id=?");
+            firstStatement.setLong(1, entity.getRoomId().getId());
+            ResultSet resultSet = firstStatement.executeQuery();
+
+            while (resultSet.next()) {
+                id = resultSet.getLong("id");
+            }
+
+            PreparedStatement secondStatement = connection.prepareStatement(bundle.getString("reservation.update"));
+            secondStatement.setLong(1, id);
+            secondStatement.setString(2, Status.CONFIRMED.getName());
+            secondStatement.setLong(3, entity.getId());
+            secondStatement.executeUpdate();
+            statement.execute("COMMIT");
+
+
             return Optional.of(entity);
         } catch (SQLException ex) {
+            statement.execute("ROLLBACK");
             logger.warn("Reservation could not be created: {}", ex.getMessage());
             return Optional.empty();
-
         }
     }
+//    @Override
+//    public Optional<Reservation> update(Reservation entity) throws SQLException {
+//        try {
+//            Long id = null;
+//            connection.setAutoCommit(false);
+//
+//            PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM reservation WHERE id=?");
+//            preparedStatement.setLong(1, entity.getRoomId().getId());
+//            ResultSet resultSet = preparedStatement.executeQuery();
+//
+//            while (resultSet.next()) {
+//                id = resultSet.getLong("id");
+//            }
+//
+//            PreparedStatement statement = connection.prepareStatement(bundle.getString("reservation.update"));
+//            statement.setLong(1, id);
+//            statement.setString(2, Status.CONFIRMED.getName());
+//            statement.setLong(3, entity.getId());
+//            statement.executeUpdate();
+//            connection.commit();
+//
+//            return Optional.of(entity);
+//        } catch (SQLException ex) {
+//            connection.rollback();
+//            logger.warn("Reservation could not be created: {}", ex.getMessage());
+//            return Optional.empty();
+//        }
+//    }
 
 
     @Override

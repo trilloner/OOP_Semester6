@@ -1,6 +1,9 @@
 import {Component, OnInit} from '@angular/core';
 import {Room} from '../model/room';
 import {RoomService} from '../service/room.service';
+// import {OAuthService, NullValidationHandler, AuthConfig} from 'angular-oauth2-oidc';
+import {OAuthService} from 'angular2-oauth2/oauth-service';
+import {Rooms} from '../model/rooms';
 
 @Component({
   selector: 'app-rooms',
@@ -8,10 +11,11 @@ import {RoomService} from '../service/room.service';
   styleUrls: ['./rooms.component.css']
 })
 export class RoomsComponent implements OnInit {
-  rooms: Room[];
+  rooms: Rooms;
 
   constructor(private roomService: RoomService) {
   }
+
 
   ngOnInit(): void {
     this.getAllRooms();
@@ -19,6 +23,7 @@ export class RoomsComponent implements OnInit {
 
   getAllRooms(): void {
     this.roomService.getAllRooms().subscribe(rooms => {
+      console.log(rooms);
       this.rooms = rooms;
     });
   }

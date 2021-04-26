@@ -1,41 +1,68 @@
 package dao.impl;
 
-import org.apache.commons.dbcp.BasicDataSource;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import javax.naming.Context;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
-import javax.sql.DataSource;
 import java.sql.Connection;
+import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.ResourceBundle;
 
 public class ConnectionPool {
     private final Logger logger = LogManager.getLogger(ConnectionPool.class);
-    private static ConnectionPool instance = null;
+    private List<Connection> availableConnections = new ArrayList<>();
+    private List<Connection> usedConnections = new ArrayList<>();
+    private final ResourceBundle bundle = ResourceBundle.getBundle("sql");
 
-    private ConnectionPool() {
+    private final int MAX_SIZE = 5;
+
+    public ConnectionPool() {
+        for (int count = 0; count < MAX_SIZE; count++) {
+            availableConnections.add(this.createConnection());
+        }
     }
 
-    public static synchronized ConnectionPool getInstance() {
-        if (instance == null)
-            instance = new ConnectionPool();
-        return instance;
+    private Connection createConnection() {
+        Connection conn = null;
+        try {
+            Class.forName(bundle.getString("database.driver"));
+            conn = DriverManager.getConnection(bundle.getString("database.url"),
+                    bundle.getString("database.user"), bundle.getString("database.pass"));
+        } catch (SQLException | ClassNotFoundException e) {
+            logger.info("Connection can`t be created");
+        }
+        return conn;
     }
+
+
 
     public Connection getConnection() {
-        Context context;
-        Connection connection = null;
-        try {
-            context = new InitialContext();
-            DataSource dataSource = (DataSource) context.lookup("java:comp/env/jdbc/hotel");
-            connection = dataSource.getConnection();
-        } catch (NamingException | SQLException e) {
-            logger.warn("Connection could not be created: {}", e.getMessage());
+        if (availableConnections.size() == 0) {
+            logger.info("All connections are used");
+            return null;
+        } else {
+            Connection con =
+                    availableConnections.remove(
+                            availableConnections.size() - 1);
+            usedConnections.add(con);
+            return con;
         }
-        return connection;
+
+    }
+
+    public boolean releaseConnection(Connection con) {
+        if (null != con) {
+            usedConnections.remove(con);
+            availableConnections.add(con);
+            return true;
+        }
+        return false;
     }
 
 
+    public int getFreeConnectionCount() {
+        return availableConnections.size();
+    }
 }

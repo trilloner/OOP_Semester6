@@ -4,6 +4,7 @@ import {User} from '../../model/user';
 import {AuthService} from '../../service/auth-service';
 import {Reservation} from '../../model/reservation';
 import {ReservationService} from '../../service/reservation.service';
+import {Reservations} from '../../model/reservations';
 
 @Component({
   selector: 'app-cabinet',
@@ -21,12 +22,13 @@ export class CabinetComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.getAllRooms();
+    this.getAllReservations();
   }
 
-  getAllRooms(): void {
-    this.reservationService.getAllReservationsByUser(this.authService.currentUserValue.id).pipe().subscribe(
+  getAllReservations(): void {
+    this.reservationService.getAllReservationsByUser(this.getUser()).pipe().subscribe(
       data => {
+        console.log(data);
         this.reservations = data;
       }
     );
@@ -36,4 +38,10 @@ export class CabinetComponent implements OnInit {
     this.authService.logout();
   }
 
+  getUser(): any {
+    const user = {
+      id: 1
+    };
+    return user;
+  }
 }

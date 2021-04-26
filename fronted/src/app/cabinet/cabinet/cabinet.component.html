@@ -38,7 +38,7 @@
       <td>{{reservation.checkIn}}</td>
       <td>{{reservation.checkOut}}</td>
       <td class="commenter">{{reservation.numberOfSeats}}<i class="fas fa-angle-down"></i></td>
-      <td *ngIf="reservation.roomId.name;else elseBlock " class="commenter">{{reservation.roomId.name}}<i
+      <td *ngIf="reservation.roomId;else elseBlock " class="commenter">{{reservation.roomId.name}}<i
         class="fas fa-angle-down"></i>
       </td>
       <ng-template #elseBlock>

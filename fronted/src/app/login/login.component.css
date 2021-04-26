@@ -49,9 +49,9 @@ label {
 #button {
   background:none;
   border:none;
-  width:100%;
-  min-height:50px;
-  margin:10px 0 10px;
+  width:50%;
+  min-height:100px;
+  margin:500px 550px 10px;
   border-radius:2.5%;
   color:white;
   padding:0.5% 0 0;

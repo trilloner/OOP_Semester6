@@ -6,7 +6,7 @@ import model.user.User;
 
 public class UserService {
 
-    private final FactoryDao factoryDao = FactoryDao.getInstance();
+    private FactoryDao factoryDao = FactoryDao.getInstance();
 
     public User loginUser(String name, String password) throws Exception {
         User resultOfUser;
@@ -17,5 +17,9 @@ public class UserService {
         if (resultOfUser.getPassword().equals(password))
             return resultOfUser;
         throw new IllegalArgumentException("Different password");
+    }
+
+    public void setFactoryDao(FactoryDao factoryDao) {
+        this.factoryDao = factoryDao;
     }
 }

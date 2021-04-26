@@ -38,13 +38,13 @@
       <td>{{reservation.checkIn}}</td>
       <td>{{reservation.checkOut}}</td>
       <td class="commenter">{{reservation.numberOfSeats}}<i class="fas fa-angle-down"></i></td>
-      <td *ngIf="reservation.roomId.name;else elseBlock " class="commenter">{{reservation.roomId.name}}<i
+      <td *ngIf="reservation.roomId;else elseBlock " class="commenter">{{reservation.roomId.name}}<i
         class="fas fa-angle-down"></i>
       </td>
       <ng-template #elseBlock>
         <td class="commenter">
           <select  (change)="onSelect($event.target.value)">
-            <option *ngFor="let room of rooms" value="{{room.id}}" id="{{room.id}}" name="{{room.id}}"> {{room.name}}</option>
+            <option *ngFor="let room of rooms.rooms" value="{{room.id}}" id="{{room.id}}" name="{{room.id}}"> {{room.name}}</option>
           </select>
         </td>
       </ng-template>
@@ -55,7 +55,7 @@
         <ng-template ngSwitchCase="PENDING">
           <td>
             <a class="no-button blur-hover" (click)="updateReservation(reservation.id)">&#10004;</a>
-            <a class="no-button blur-hover" (click)="updateReservation( reservation.id)">
+            <a class="no-button blur-hover" (click)="deleteReservation(reservation.id)">
               &#10006;</a>
           </td>
         </ng-template>

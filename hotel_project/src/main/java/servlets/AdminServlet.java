@@ -23,12 +23,11 @@ public class AdminServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         logger.info("Executing reservation post controller");
         try {
-
             Reservation reservation = reservationService.updateReservation(Util.buildAdminReservation(req));
             JsonConverter.makeJsonAnswer(reservation, resp);
         } catch (Exception e) {
             logger.error("Can`t update reservation:{}", e.getMessage());
-            resp.sendError(500);
+            resp.sendError(400);
         }
     }
 }

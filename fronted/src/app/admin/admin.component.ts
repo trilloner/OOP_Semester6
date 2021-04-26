@@ -5,6 +5,7 @@ import {RoomService} from '../service/room.service';
 import {Room} from '../model/room';
 import {Reservation} from '../model/reservation';
 import {Router} from '@angular/router';
+import {Rooms} from '../model/rooms';
 
 @Component({
   selector: 'app-admin',
@@ -12,7 +13,7 @@ import {Router} from '@angular/router';
   styleUrls: ['./admin.component.css']
 })
 export class AdminComponent implements OnInit {
-  rooms: Room[];
+  rooms: Rooms;
   reservations: Reservation[];
   selectedRoom: number;
 
@@ -45,7 +46,11 @@ export class AdminComponent implements OnInit {
 
   updateReservation(id: number): void {
     console.log(id, this.selectedRoom);
-    this.reservationService.updateReservation(this.selectedRoom, id).pipe().subscribe();
+    this.reservationService.updateReservation(this.selectedRoom, id).pipe().subscribe(data => console.log(data));
+  }
+
+  deleteReservation(id: number): void {
+    this.reservationService.deleteReservation(id).pipe().subscribe();
   }
 
   onSelect(value: any): void {

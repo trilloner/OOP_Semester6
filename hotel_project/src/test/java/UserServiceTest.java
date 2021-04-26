@@ -1,29 +1,43 @@
+import dao.FactoryDao;
+import dao.UserDao;
 import model.user.User;
 import model.user.UserBuilder;
 import org.junit.Before;
 import org.junit.Test;
 import service.UserService;
 
+import java.util.Optional;
+
 import static org.mockito.Mockito.*;
 
 public class UserServiceTest {
 
-    private final UserService userService = new UserService();
+    private UserService userService;
+    private final FactoryDao factoryDao = mock(FactoryDao.class);
+    private final UserDao userDao = mock(UserDao.class);
+    private User user;
 
     @Before
-    public void setUp() throws Exception {
+    public void init() {
+        userService = new UserService();
+        userService.setFactoryDao(factoryDao);
 
+        user = new UserBuilder()
+                .setId(1L)
+                .setName("Alex")
+                .setPassword("1")
+                .setEmail("12@gmail.com")
+                .build();
     }
 
     @Test
-    public void givenUsedEmail() throws Exception {
-        User user = new UserBuilder().setId(1L).setName("Alex").setPassword("1").setEmail("12@gmail.com").build();
-        when(userService.loginUser(anyString(), anyString())).thenReturn(user);
-        userService.loginUser("name", "pass");
-        verify(userService, times(1)).loginUser(anyString(), anyString());
+    public void shouldLoginUser() throws Exception {
+        when(factoryDao.createUserDao()).thenReturn(userDao);
+        when(userDao.findByEmail(anyString())).thenReturn(Optional.of(user));
+        userService.loginUser("name", "1");
+        verify(factoryDao, times(1)).createUserDao();
+        verify(userDao, times(1)).findByEmail(anyString());
     }
-
-
 }
 
 

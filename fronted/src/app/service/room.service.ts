@@ -2,6 +2,7 @@ import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {Observable} from 'rxjs';
 import {Room} from '../model/room';
+import {Rooms} from '../model/rooms';
 
 @Injectable({
   providedIn: 'root'
@@ -12,7 +13,7 @@ export class RoomService {
   constructor(private httpClient: HttpClient) {
   }
 
-  getAllRooms(): Observable<Room[]> {
-    return this.httpClient.get<Room[]>(this.url);
+  getAllRooms(): Observable<Rooms> {
+    return this.httpClient.get<Rooms>(this.url);
   }
 }
