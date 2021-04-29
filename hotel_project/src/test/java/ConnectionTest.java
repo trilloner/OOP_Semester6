@@ -1,16 +1,19 @@
 import dao.impl.ConnectionPool;
+import org.junit.Assert;
 import org.junit.Test;
-import org.postgresql.jdbc.PgConnection;
+
+import java.sql.Connection;
+import java.sql.SQLException;
 
 public class ConnectionTest {
 
 
     @Test
-    public void shouldReturnFakeConnection() {
+    public void shouldGetConnectionAndReturnBackToPool() throws SQLException {
         ConnectionPool connectionPool = new ConnectionPool();
-        PgConnection connection = (PgConnection) connectionPool.getConnection();
-        FakeConnection fakeConnection = (FakeConnection) connection;
-        System.out.println(fakeConnection);
-
+        Connection connection = connectionPool.getConnection();
+        Assert.assertEquals(4, connectionPool.getFreeConnectionCount());
+        connection.close();
+        Assert.assertEquals(5, connectionPool.getFreeConnectionCount());
     }
 }

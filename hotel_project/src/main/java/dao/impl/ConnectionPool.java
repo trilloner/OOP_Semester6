@@ -3,6 +3,7 @@ package dao.impl;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.lang.reflect.Proxy;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -12,8 +13,8 @@ import java.util.ResourceBundle;
 
 public class ConnectionPool {
     private final Logger logger = LogManager.getLogger(ConnectionPool.class);
-    private List<Connection> availableConnections = new ArrayList<>();
-    private List<Connection> usedConnections = new ArrayList<>();
+    private final List<Connection> availableConnections = new ArrayList<>();
+    private final List<Connection> usedConnections = new ArrayList<>();
     private final ResourceBundle bundle = ResourceBundle.getBundle("sql");
 
     private final int MAX_SIZE = 5;
@@ -33,9 +34,21 @@ public class ConnectionPool {
         } catch (SQLException | ClassNotFoundException e) {
             logger.info("Connection can`t be created");
         }
-        return conn;
+        Connection finalConn = conn;
+        return (Connection) Proxy.newProxyInstance(Connection.class.getClassLoader(), new Class[]{Connection.class},
+                ((proxy, method, args) -> {
+                    if (method.getName().equals("close")) {
+                        if (finalConn.isClosed()) {
+                            throw new IllegalArgumentException("Connection is already closed");
+                        }
+                        synchronized (this) {
+                            usedConnections.remove(proxy);
+                            availableConnections.add((Connection) proxy);
+                        }
+                    }
+                    return method.invoke(finalConn, args);
+                }));
     }
-
 
 
     public Connection getConnection() {
@@ -50,15 +63,6 @@ public class ConnectionPool {
             return con;
         }
 
-    }
-
-    public boolean releaseConnection(Connection con) {
-        if (null != con) {
-            usedConnections.remove(con);
-            availableConnections.add(con);
-            return true;
-        }
-        return false;
     }
 
 

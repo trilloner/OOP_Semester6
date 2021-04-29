@@ -70,7 +70,7 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
-    public User findById(int id) {
+    public User findById(long id) {
         throw new UnsupportedOperationException();
     }
 

@@ -30,7 +30,7 @@ import {OAuthModule} from 'angular-oauth2-oidc';
     KeycloakAngularModule,
     OAuthModule.forRoot({
       resourceServer: {
-        allowedUrls: ['http://localhost:8080/rooms'],
+        allowedUrls: ['http://localhost:8080/'],
         sendAccessToken: true
       }
     })

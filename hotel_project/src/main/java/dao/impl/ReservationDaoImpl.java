@@ -20,11 +20,13 @@ public class ReservationDaoImpl implements ReservationDao {
 
     private final Logger logger = LogManager.getLogger(ReservationDaoImpl.class);
     private final Connection connection;
-    private ResourceBundle bundle = ResourceBundle.getBundle("sql");
-    private ReservationMapper reservationMapper = new ReservationMapper();
+    private final ResourceBundle bundle = ResourceBundle.getBundle("sql");
+    private final ReservationMapper reservationMapper = new ReservationMapper();
+    private final RoomDaoImpl roomDao;
 
     public ReservationDaoImpl(Connection connection) {
         this.connection = connection;
+        roomDao = new RoomDaoImpl(connection);
     }
 
     @Override
@@ -54,7 +56,7 @@ public class ReservationDaoImpl implements ReservationDao {
     }
 
     @Override
-    public Reservation findById(int id) {
+    public Reservation findById(long id) {
         return null;
     }
 
@@ -108,66 +110,39 @@ public class ReservationDaoImpl implements ReservationDao {
 
     // TODO Transaction
     @Override
-    public Optional<Reservation> update(Reservation entity) throws SQLException {
-        Statement statement = null;
+    public Optional<Reservation> update(Reservation entity) {
         try {
             connection.setAutoCommit(false);
-            statement = connection.createStatement();
-            statement.execute("BEGIN TRANSACTION");
-            Long id = null;
 
-            PreparedStatement firstStatement = connection.prepareStatement("SELECT * FROM reservation WHERE id=?");
-            firstStatement.setLong(1, entity.getRoomId().getId());
-            ResultSet resultSet = firstStatement.executeQuery();
+            TransactionManager.beginTransaction(connection);
 
-            while (resultSet.next()) {
-                id = resultSet.getLong("id");
-            }
+            Room room = roomDao.findById(entity.getRoomId().getId());
 
-            PreparedStatement secondStatement = connection.prepareStatement(bundle.getString("reservation.update"));
-            secondStatement.setLong(1, id);
-            secondStatement.setString(2, Status.CONFIRMED.getName());
-            secondStatement.setLong(3, entity.getId());
-            secondStatement.executeUpdate();
-            statement.execute("COMMIT");
+            updateReservationByRoomId(room.getId(), entity.getId());
 
+            TransactionManager.commitTransaction(connection);
 
             return Optional.of(entity);
+
         } catch (SQLException ex) {
-            statement.execute("ROLLBACK");
+            TransactionManager.rollbackTransaction(connection);
             logger.warn("Reservation could not be created: {}", ex.getMessage());
+
             return Optional.empty();
         }
     }
-//    @Override
-//    public Optional<Reservation> update(Reservation entity) throws SQLException {
-//        try {
-//            Long id = null;
-//            connection.setAutoCommit(false);
-//
-//            PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM reservation WHERE id=?");
-//            preparedStatement.setLong(1, entity.getRoomId().getId());
-//            ResultSet resultSet = preparedStatement.executeQuery();
-//
-//            while (resultSet.next()) {
-//                id = resultSet.getLong("id");
-//            }
-//
-//            PreparedStatement statement = connection.prepareStatement(bundle.getString("reservation.update"));
-//            statement.setLong(1, id);
-//            statement.setString(2, Status.CONFIRMED.getName());
-//            statement.setLong(3, entity.getId());
-//            statement.executeUpdate();
-//            connection.commit();
-//
-//            return Optional.of(entity);
-//        } catch (SQLException ex) {
-//            connection.rollback();
-//            logger.warn("Reservation could not be created: {}", ex.getMessage());
-//            return Optional.empty();
-//        }
-//    }
 
+    private void updateReservationByRoomId(long roomId, long reservationId) {
+        try {
+            PreparedStatement secondStatement = connection.prepareStatement(bundle.getString("reservation.update"));
+            secondStatement.setLong(1, roomId);
+            secondStatement.setString(2, Status.CONFIRMED.getName());
+            secondStatement.setLong(3, reservationId);
+            secondStatement.executeUpdate();
+        } catch (SQLException e) {
+            logger.error("Reservation could not be updated: {}", e.getMessage());
+        }
+    }
 
     @Override
     public void close() throws SQLException {

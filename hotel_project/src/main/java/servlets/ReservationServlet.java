@@ -45,7 +45,6 @@ public class ReservationServlet extends HttpServlet {
             JsonConverter.makeJsonAnswer(reservation, resp);
         } catch (Exception e) {
             logger.error("Can`t create reservation: {}", e.getMessage());
-
             resp.sendError(400, "Something went wrong on server");
         }
     }

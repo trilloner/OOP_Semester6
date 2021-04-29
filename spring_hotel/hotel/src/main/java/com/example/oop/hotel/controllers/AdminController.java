@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.*;
 @Slf4j
 @RequestMapping("/admin")
 @CrossOrigin(origins = "http://localhost:4200")
-
 public class AdminController {
     private final OrderService orderService;
 
@@ -22,6 +21,7 @@ public class AdminController {
 
     // remove exception
     @PostMapping()
+    @PreAuthorize("hasAnyRole('admin')")
     public ResponseEntity updateOrder(@RequestParam Long orderId,
                                       @RequestParam Long roomId) {
         try {
@@ -35,6 +35,7 @@ public class AdminController {
 
 
     @GetMapping()
+    @PreAuthorize("hasAnyRole('admin')")
     public ResponseEntity deleteOrder(@RequestParam Long orderId) {
         try {
             orderService.deleteById(orderId);

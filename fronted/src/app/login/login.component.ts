@@ -23,7 +23,7 @@ export class LoginComponent implements OnInit {
               private authService: AuthService,
               private userService: UserService,
               private oauthService: OAuthService) {
-    this.configure();
+
     if (this.authService.currentUserValue) {
       this.router.navigate(['cabinet']);
     }
@@ -31,35 +31,7 @@ export class LoginComponent implements OnInit {
 
   }
 
-  authConfig: AuthConfig = {
-    issuer: 'http://localhost:8180/auth/realms/SpringHotel',
-    redirectUri: window.location.origin + '/rooms',
-    clientId: 'spa-client',
-    responseType: 'code',
-    scope: 'openid profile email',
-    // at_hash is not present in JWT token
-    disableAtHashCheck: true,
-    showDebugInformation: true
-  };
 
-  public login(): void {
-    this.oauthService.initLoginFlow();
-  }
-
-  public logoff(): void {
-    this.oauthService.logOut();
-  }
-
-  private configure(): void {
-    this.oauthService.configure(this.authConfig);
-    this.oauthService.tokenValidationHandler = new NullValidationHandler();
-    this.oauthService.loadDiscoveryDocumentAndTryLogin();
-  }
-
-  getUserClaims(): void {
-    const user = this.oauthService.loadUserProfile();
-    console.log(user, user);
-  }
 
 
   ngOnInit(): void {

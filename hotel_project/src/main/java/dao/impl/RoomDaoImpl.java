@@ -2,6 +2,7 @@ package dao.impl;
 
 import dao.RoomDao;
 import dao.mapper.RoomMapper;
+import model.reservation.Reservation;
 import model.room.Room;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -33,8 +34,21 @@ public class RoomDaoImpl implements RoomDao {
     }
 
     @Override
-    public Room findById(int id) {
-        return null;
+    public Room findById(long id) {
+        Room room = new Room();
+        try {
+            PreparedStatement firstStatement = connection.prepareStatement("SELECT * FROM reservation WHERE id=?");
+            firstStatement.setLong(1, id);
+            ResultSet resultSet = firstStatement.executeQuery();
+
+            while (resultSet.next()) {
+                room.setId(resultSet.getLong("id"));
+                return room;
+            }
+        } catch (SQLException e) {
+            logger.error("Room can`t be found: {}", e.getMessage());
+        }
+        return room;
     }
 
     @Override
